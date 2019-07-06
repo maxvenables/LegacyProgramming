@@ -1,0 +1,12 @@
+{
+  "name": "cpp-workspace",
+  "id": "4228190",
+  "description": "",
+  "gitUrl": "",
+  "workspaceType": "cpp",
+  "dockerBaseImage": "cloud9/ws-cpp:2016-11-01T05-38-41Z",
+  "owner": {
+    "name": "maxvenables",
+    "id": "1494273"
+  }
+}
