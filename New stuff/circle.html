@@ -8,22 +8,26 @@
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min + 1)) + min;
           }
-          var circle = {
-            radius: 0,
-            max: 150,
-            min: 0,
-            increase: 1,
-            changeRad: function(){
-              if (this.radius >= this.max){
+          class ball {
+            constructor(max, min, rad){
+              this.max = max;
+              this.min = min;
+              this.rad = rad;
+              this.increase = 1;
+            }
+            changeRad(){
+              if (this.rad >= this.max){
                 this.increase = -1;
               }
-              else if (this.radius <= this.min){
+              else if (this.rad <= this.min){
                 this.increase = 1;
               }
-              this.radius += this.increase;
+              this.rad += this.increase;
+              console.log(this.rad)
               }
-            };
+            }
 
+          var circle = new ball(150, 0, 0);
 
 
           function draw(){
@@ -34,7 +38,7 @@
               context.beginPath();
               //var radius = getrand(0,150);
               circle.changeRad();
-              context.arc(150,150,circle.radius,0,2 * Math.PI );
+              context.arc(150,150,circle.rad,0,2 * Math.PI );
               context.stroke();
               context.restore();
               //radius = (radius + 1) % 150;
