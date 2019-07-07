@@ -36,16 +36,13 @@
               context.clearRect(0,0,300,300);
               context.save();
               context.beginPath();
-              //var radius = getrand(0,150);
               circle.changeRad();
               context.arc(150,150,circle.rad,0,2 * Math.PI );
               context.stroke();
               context.restore();
-              //radius = (radius + 1) % 150;
               window.requestAnimationFrame(draw);
 
           }
-          //window.requestAnimationFrame(draw);
           draw()
         </script>
     </body>
