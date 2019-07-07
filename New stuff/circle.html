@@ -1,0 +1,48 @@
+<!doctype html> <!-- always start document like this -->
+<html> <!-- everything enclosed by html tags -->
+    <body> <!-- contains visable data -->
+        <canvas id="myCanvas" width="300" height = "300" style="border:1px solid #d3d3d3"></canvas> <!-- Generates canvas with name myCanvas width 200 heght 200 with a 1 pixel border of colour d3d3d3-->
+        <script>
+          function getrand(min,max){
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+          }
+          var circle = {
+            radius: 0,
+            max: 150,
+            min: 0,
+            increase: 1,
+            changeRad: function(){
+              if (this.radius >= this.max){
+                this.increase = -1;
+              }
+              else if (this.radius <= this.min){
+                this.increase = 1;
+              }
+              this.radius += this.increase;
+              }
+            };
+
+
+
+          function draw(){
+              var canvas = document.getElementById("myCanvas"); //Stores canvas from html into a variable
+              var context = canvas.getContext("2d"); //Gets object context which can be used to render graphics
+              context.clearRect(0,0,300,300);
+              context.save();
+              context.beginPath();
+              //var radius = getrand(0,150);
+              circle.changeRad();
+              context.arc(150,150,circle.radius,0,2 * Math.PI );
+              context.stroke();
+              context.restore();
+              //radius = (radius + 1) % 150;
+              window.requestAnimationFrame(draw);
+
+          }
+          //window.requestAnimationFrame(draw);
+          draw()
+        </script>
+    </body>
+</html> <!-- tags with / indicate end-->
