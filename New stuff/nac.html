@@ -1,0 +1,162 @@
+<!doctype html> <!-- always start document like this -->
+<html> <!-- everything enclosed by html tags -->
+    <body> <!-- contains visable data -->
+        <canvas id="myCanvas" width="300" height = "300" style="border:1px solid #000000"></canvas> <!-- Generates canvas with name myCanvas width 200 heght 200 with a 1 pixel border of colour d3d3d3-->
+        <script>
+          var canvas = document.getElementById("myCanvas")
+          var ctx = canvas.getContext("2d")
+          function drawBoard(){
+            ctx.moveTo(100,0);
+            ctx.lineTo(100,300);
+            ctx.stroke();
+
+            ctx.moveTo(200,0)
+            ctx.lineTo(200,300);
+            ctx.stroke();
+
+            ctx.moveTo(0,100);
+            ctx.lineTo(300,100);
+            ctx.stroke();
+
+            ctx.moveTo(0,200);
+            ctx.lineTo(300,200);
+            ctx.stroke();
+          }
+
+          function getMousePos(canvas, event) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+              x: event.clientX - rect.left,
+              y: event.clientY - rect.top
+            };
+          }
+
+          function isInside(pos, rect){
+            return pos.x > rect.x && pos.x < rect.x+rect.width && pos.y < rect.y+rect.height && pos.y > rect.y
+          }
+
+          class rect {
+            constructor(x,y,width,height){
+              this.x = x;
+              this.y = y;
+              this.width = width;
+              this.height =  height;
+              this.marked = false;
+              this.mark = 0;
+            }
+          }
+          counter = 1
+
+          function drawMark(rect){
+            if (counter == 1){
+            drawNought(rect);
+            }
+            else {
+              drawCross(rect);
+            }
+            counter /= -1;
+          }
+
+          function drawCross(rect){
+            ctx.moveTo(rect.x,rect.y);
+            ctx.lineTo(rect.x+100,rect.y+100);
+            ctx.lineTo(rect.x + 100,rect.y);
+            ctx.lineTo(rect.x,rect.y+100);
+            ctx.stroke();
+          }
+
+          function drawNought(rect){
+            ctx.moveTo(rect.x+50,rect.y+50);
+            ctx.beginPath();
+            ctx.arc(rect.x+50,rect.y+50,50,0,2*Math.PI);
+            ctx.stroke();
+          }
+
+
+
+          var topleft = new rect(0,0,100,100)
+          var topmid = new rect(100,0,100,100)
+          var topright = new rect(200,0,100,100)
+          var midleft = new rect(0,100,100,100)
+          var mid = new rect(100,100,100,100)
+          var midright = new rect(200,100,100,100)
+          var botleft = new rect(0,200,100,100)
+          var botmid = new rect(100,200,100,100)
+          var botright = new rect(200,200,100,100)
+
+          var rects = [topleft,topmid,topright,midleft,mid,midright,botleft,botmid,botright]
+
+          var wincons = [
+            [1,1,1,0,0,0,0,0,0],
+            [0,0,0,1,1,1,0,0,0],
+            [0,0,0,0,0,0,1,1,1],
+            [1,0,0,1,0,0,1,0,0],
+            [0,1,0,0,1,0,0,1,0],
+            [0,0,1,0,0,1,0,0,1],
+            [1,0,0,0,1,0,0,0,1],
+            [0,0,1,0,1,0,1,0,0]
+          ]
+
+          function checkIfWon(rects, wincons){
+            var marks = []
+            for (i in rects){
+              marks.push(rects[i].mark);
+            }
+            console.log(marks);
+            var crosses = [];
+            for (i in marks){
+              if (marks[i] == -1){
+                crosses.push(1);
+              }
+              else{
+                crosses.push(0);
+              }
+            var noughts = [];
+            for (i in marks){
+              if (marks[i] == 1){
+                noughts.push(1);
+              }
+              else{
+                noughts.push(0);
+              }
+            }
+            console.log(noughts);
+            console.log(crosses);
+            if (wincons.includes(crosses) == true){
+              return "crosses"
+            }else if (wincons.includes(noughts) == true){
+              return "noughts"
+            } else {
+              return "continue"
+            }
+          }
+        }
+          drawBoard()
+          //Binding the click event on the canvas
+          function checkpos(rects){
+            canvas.addEventListener('click', function(evt) {
+              var mousePos = getMousePos(canvas, evt);
+
+              var i;
+              for (i in rects){
+                if (isInside(mousePos,rects[i])) {
+                  //alert('clicked inside rect' + rects[i].name);
+                  //drawCross(rects[i]);
+                  if (rects[i].marked == false){
+                    rects[i].mark = counter
+                    drawMark(rects[i]);
+                    rects[i].marked = true;
+                  }
+
+                  console.log(checkIfWon(rects, wincons));
+                }
+              }
+            }, false);
+
+          }
+          checkpos(rects);
+
+
+        </script>
+    </body>
+</html> <!-- tags with / indicate end-->
