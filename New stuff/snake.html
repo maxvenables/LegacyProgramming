@@ -1,0 +1,85 @@
+<!doctype html> <!-- always start document like this -->
+<html> <!-- everything enclosed by html tags -->
+    <body> <!-- contains visable data -->
+        <!--<canvas id="myCanvas" width="300" height = "300" style="border:1px solid #d3d3d3" ></canvas> <!-- Generates canvas with name myCanvas width 200 heght 200 with a 1 pixel border of colour d3d3d3-->
+        <script>
+          class grid{
+            constructor(height, width, filler){
+              this.height = height;
+              this.width = width;
+              this.gameGrid = [];
+              console.log
+              for (var i = 0; i < height; i++){
+                this.gameGrid.push([]);
+                for (var j = 0; j < width; j++){
+                  this.gameGrid[i].push(filler)
+                }
+              }
+            }
+            getter(x,y){
+              return this.gameGrid[x][y]
+            }
+            setter(value,x,y){
+              this.gameGrid[x][y] = value
+            }
+          }
+
+          class snek{
+            constructor(x, y, symbol){
+              this.x = x;
+              this.y = y;
+              this.symbol = symbol;
+              this.queue = []
+            }
+          }
+
+
+
+
+
+          var empty = 0;
+          var snake = 1;
+          var fruit = 2;
+
+          var cols = 25;
+          var rows = 25;
+          var gridsize = 20
+
+          var gameGrid = new grid(cols, rows, empty);
+          gameGrid.gameGrid[0][0] = snake;
+
+          function main(grid){
+            canvas = document.createElement("Canvas")
+            //var canvas = document.getElementById("Canvas")
+            canvas.width = cols * gridsize;
+            canvas.height = rows * gridsize;
+            canvas.style = "border:1px solid #000000";
+            var ctx = canvas.getContext("2d");
+            document.body.appendChild(canvas);
+
+            draw(ctx, grid)
+          }
+
+          function draw(ctx, grid){
+            for (i in grid.gameGrid){
+              for (j in grid.gameGrid[i]){
+                if (grid.gameGrid[i][j] === snake){
+                  x = i*gridsize;
+                  y = j*gridsize;
+                  ctx.fillStyle = "#FF0000"
+                  ctx.fillRect(x,y,gridsize,gridsize);
+                }
+              }
+            }
+
+
+
+            setInterval( function() {draw(ctx, grid);}, 100);
+          }
+
+
+
+          main(gameGrid);
+        </script>
+    </body>
+</html> <!-- tags with / indicate end-->
