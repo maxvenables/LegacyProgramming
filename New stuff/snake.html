@@ -44,7 +44,7 @@
               this.queue.unshift([this.x,this.y]);
               //console.log(this.queue);
             }
-            pop(){
+            popa(){
               this.queue.pop();
               //console.log(this.queue);
             }
@@ -93,8 +93,8 @@
             canvas.style = "border:1px solid #000000";
             var ctx = canvas.getContext("2d");
             document.body.appendChild(canvas);
-
-            draw(ctx, grid, snek)
+            draw(ctx,grid,snek);
+            loop(ctx, grid, snek);
           }
 
           function draw(ctx, grid, snek){
@@ -113,10 +113,14 @@
                 }
               }
             }
+            update(grid,snek);
+          }
 
-              update(grid,snek);
+          function loop(ctx,grid,snek){
 
-              setInterval( function() {draw(ctx, grid, snek);}, 3000);
+
+            //console.log("test");
+            setInterval( function() {draw(ctx, grid, snek);}, 3000);
           }
 
           function update(grid,snek){
@@ -126,7 +130,7 @@
             }
             //console.log(grid.gameGrid);
             snek.updategrow();
-            snek.pop();
+            snek.popa();
             for (i in snek.queue){
               grid.gameGrid[snek.queue[i][0]][snek.queue[i][1]] = snake;
             }
