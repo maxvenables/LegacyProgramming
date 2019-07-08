@@ -1,7 +1,7 @@
 <!doctype html> <!-- always start document like this -->
 <html> <!-- everything enclosed by html tags -->
     <body> <!-- contains visable data -->
-        <!--<canvas id="myCanvas" width="300" height = "300" style="border:1px solid #d3d3d3" ></canvas> <!-- Generates canvas with name myCanvas width 200 heght 200 with a 1 pixel border of colour d3d3d3-->
+        <!--<canvas id="myCanvas" width="300" height = "300" style="border:1px solid #d3d3d3" ></canvas>--> <!-- Generates canvas with name myCanvas width 200 heght 200 with a 1 pixel border of colour d3d3d3-->
         <script>
           class grid{
             constructor(height, width, filler){
@@ -25,13 +25,49 @@
           }
 
           class snek{
-            constructor(x, y, symbol){
+            constructor(x, y, symbol, direction){
               this.x = x;
               this.y = y;
               this.symbol = symbol;
-              this.queue = []
+              this.queue = [];
+              this.direction = direction;
+              this.updown = 0;
+              this.leftright = 0;
+              this.directiondeccide();
+              this.updategrow();
             }
+            updategrow(){
+
+              this.x = this.x + this.leftright
+              this.y = this.y + this.updown
+              console.log(this.updown);
+              this.queue.unshift([this.x,this.y]);
+              //console.log(this.queue);
+            }
+            pop(){
+              this.queue.pop();
+              //console.log(this.queue);
+            }
+            directiondeccide(){
+              if (this.direction === "left"){
+                this.updown = 0
+                this.leftright = -1
+              }
+              else if (this.direction === "right"){
+                this.updown = 0
+                this.leftright = 1
+              }
+              else if (this.direction === "up"){
+                this.updown = -1
+                this.leftright = 0
+              }
+              else if (this.direction === "down"){
+                this.updown = 1
+                this.leftright = 0
+              }
+
           }
+        }
 
 
 
@@ -45,41 +81,61 @@
           var rows = 25;
           var gridsize = 20
 
-          var gameGrid = new grid(cols, rows, empty);
-          gameGrid.gameGrid[0][0] = snake;
+          var snak = new snek(6,6,snake,"up");
 
-          function main(grid){
+          var gameGrid = new grid(cols, rows, empty);
+          gameGrid.gameGrid[0][0] = fruit;
+
+          function main(grid,snek){
             canvas = document.createElement("Canvas")
-            //var canvas = document.getElementById("Canvas")
             canvas.width = cols * gridsize;
             canvas.height = rows * gridsize;
             canvas.style = "border:1px solid #000000";
             var ctx = canvas.getContext("2d");
             document.body.appendChild(canvas);
 
-            draw(ctx, grid)
+            draw(ctx, grid, snek)
           }
 
-          function draw(ctx, grid){
+          function draw(ctx, grid, snek){
             for (i in grid.gameGrid){
               for (j in grid.gameGrid[i]){
-                if (grid.gameGrid[i][j] === snake){
+                if (grid.gameGrid[i][j] !== empty){
                   x = i*gridsize;
                   y = j*gridsize;
-                  ctx.fillStyle = "#FF0000"
+                  if (grid.gameGrid[i][j] == snake){
+                    ctx.fillStyle = "#FF0000";
+                  }
+                  else if (grid.gameGrid[i][j] == fruit){
+                    ctx.fillStyle = "#0000FF"
+                  }
                   ctx.fillRect(x,y,gridsize,gridsize);
                 }
               }
             }
 
+              update(grid,snek);
 
+              setInterval( function() {draw(ctx, grid, snek);}, 3000);
+          }
 
-            setInterval( function() {draw(ctx, grid);}, 100);
+          function update(grid,snek){
+            //console.log(snek.queue)
+            for (i in snek.queue){
+              grid.gameGrid[snek.queue[i][0]][snek.queue[i][1]] = empty;
+            }
+            //console.log(grid.gameGrid);
+            snek.updategrow();
+            snek.pop();
+            for (i in snek.queue){
+              grid.gameGrid[snek.queue[i][0]][snek.queue[i][1]] = snake;
+            }
+            //console.log(grid.gameGrid);
           }
 
 
 
-          main(gameGrid);
+          main(gameGrid,snak);
         </script>
     </body>
 </html> <!-- tags with / indicate end-->
