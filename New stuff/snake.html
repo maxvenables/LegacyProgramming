@@ -36,13 +36,21 @@
               this.directiondeccide();
               this.updategrow();
             }
-            updategrow(){
+            updategrow(clear,ctx){
 
-              this.x = this.x + this.leftright
-              this.y = this.y + this.updown
-              console.log(this.updown);
+              this.x = this.x + this.leftright;
+              this.y = this.y + this.updown;
+              //console.log(this.updown);
               this.queue.unshift([this.x,this.y]);
               //console.log(this.queue);
+              if (this.x > cols - 1 || this.x < 0){
+                clearInterval(clear);
+                gameOver(ctx);
+              }
+              if (this.y > rows - 1 || this.y < 0){
+                clearInterval(clear);
+                gameOver(ctx);
+              }
             }
             popa(){
               this.queue.pop();
@@ -65,8 +73,11 @@
                 this.updown = 1
                 this.leftright = 0
               }
-
-          }
+            }
+            updateDirection(direc){
+              this.direction = direc;
+              this.directiondeccide();
+            }
         }
 
 
@@ -93,11 +104,25 @@
             canvas.style = "border:1px solid #000000";
             var ctx = canvas.getContext("2d");
             document.body.appendChild(canvas);
+            document.addEventListener("keydown", function(event){
+              if(event.keyCode == 65){
+                snek.updateDirection("left");
+              }
+              else if (event.keyCode == 83){
+                snek.updateDirection("down");
+              }
+              else if (event.keyCode == 87){
+                snek.updateDirection("up")
+              }
+              else if (event.keyCode == 68){
+                snek.updateDirection("right")
+              }
+            });
             draw(ctx,grid,snek);
             loop(ctx, grid, snek);
           }
 
-          function draw(ctx, grid, snek){
+          function draw(ctx, grid, snek, clear){
             ctx.clearRect(0,0,cols*gridsize, rows*gridsize);
             for (i in grid.gameGrid){
               for (j in grid.gameGrid[i]){
@@ -114,28 +139,36 @@
                 }
               }
             }
-            update(grid,snek);
+            update(grid,snek,clear,ctx);
           }
 
           function loop(ctx,grid,snek){
 
 
             //console.log("test");
-            setInterval( function() {draw(ctx, grid, snek);}, 100);
+            var clear = setInterval( function() {draw(ctx, grid, snek, clear);}, 100);
+
           }
 
-          function update(grid,snek){
+          function update(grid,snek,clear,ctx){
             //console.log(snek.queue)
             for (i in snek.queue){
+              console.log((snek.queue));
+              if (snek.queue[i][0] >= 0 && snek.queue[i][0] <= cols-1){
               grid.gameGrid[snek.queue[i][0]][snek.queue[i][1]] = empty;
+              }
             }
             //console.log(grid.gameGrid);
-            snek.updategrow();
+            snek.updategrow(clear,ctx);
             snek.popa();
             for (i in snek.queue){
+              if (snek.queue[i][0] >= 0 && snek.queue[i][0] <= cols-1){
               grid.gameGrid[snek.queue[i][0]][snek.queue[i][1]] = snake;
+              }
             }
             //console.log(grid.gameGrid);
+          }
+          function gameOver(ctx){
           }
 
 
