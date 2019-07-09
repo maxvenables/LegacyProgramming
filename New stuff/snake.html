@@ -8,7 +8,6 @@
               this.height = height;
               this.width = width;
               this.gameGrid = [];
-              console.log
               for (var i = 0; i < height; i++){
                 this.gameGrid.push([]);
                 for (var j = 0; j < width; j++){
@@ -75,7 +74,18 @@
               }
             }
             updateDirection(direc){
-              this.direction = direc;
+              if (this.direction === "left" && direc !== "right"){
+                this.direction = direc;
+              }
+              else if (this.direction === "right" && direc !== "left"){
+                this.direction = direc;
+              }
+              else if (this.direction === "up" && direc !== "down"){
+                this.direction = direc;
+              }
+              else if (this.direction === "down" && direc !== "up"){
+                this.direction = direc;
+              }
               this.directiondeccide();
             }
         }
@@ -92,7 +102,13 @@
           var rows = 25;
           var gridsize = 20
 
-          var snak = new snek(6,6,snake,"up");
+          var snak = new snek(6,24,snake,"up");
+          snak.updategrow();
+          snak.updategrow();
+          snak.updategrow();
+          snak.updategrow();
+          snak.updategrow();
+
 
           var gameGrid = new grid(cols, rows, empty);
           gameGrid.gameGrid[0][0] = fruit;
@@ -153,7 +169,7 @@
           function update(grid,snek,clear,ctx){
             //console.log(snek.queue)
             for (i in snek.queue){
-              console.log((snek.queue));
+              //console.log((snek.queue));
               if (snek.queue[i][0] >= 0 && snek.queue[i][0] <= cols-1){
               grid.gameGrid[snek.queue[i][0]][snek.queue[i][1]] = empty;
               }
