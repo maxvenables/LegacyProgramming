@@ -98,6 +98,7 @@
           }
 
           function draw(ctx, grid, snek){
+            ctx.clearRect(0,0,cols*gridsize, rows*gridsize);
             for (i in grid.gameGrid){
               for (j in grid.gameGrid[i]){
                 if (grid.gameGrid[i][j] !== empty){
@@ -120,7 +121,7 @@
 
 
             //console.log("test");
-            setInterval( function() {draw(ctx, grid, snek);}, 3000);
+            setInterval( function() {draw(ctx, grid, snek);}, 100);
           }
 
           function update(grid,snek){
