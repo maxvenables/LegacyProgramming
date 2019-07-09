@@ -8,7 +8,6 @@
               this.height = height;
               this.width = width;
               this.gameGrid = [];
-              console.log
               for (var i = 0; i < height; i++){
                 this.gameGrid.push([]);
                 for (var j = 0; j < width; j++){
@@ -20,7 +19,10 @@
               return this.gameGrid[x][y]
             }
             setter(value,x,y){
-              this.gameGrid[x][y] = value
+              //console.log(x,y)
+              console.log(this.gameGrid[x][y]);
+              console.log(value);
+              this.gameGrid[x][y] = value;
             }
           }
 
@@ -30,6 +32,7 @@
               this.y = y;
               this.symbol = symbol;
               this.queue = [];
+              this.queue.unshift([this.x,this.y]);
               this.direction = direction;
               this.updown = 0;
               this.leftright = 0;
@@ -37,13 +40,41 @@
               this.updategrow();
             }
             updategrow(){
-
-              this.x = this.x + this.leftright
-              this.y = this.y + this.updown
-              console.log(this.updown);
+              var tempx = this.x;
+              var tempy = this.y;
+              //this.x = this.x + this.leftright
+              //this.y = this.y + this.updown
+              this.x = Math.abs((this.x + this.leftright) % cols)
+              this.y = Math.abs((this.y + this.updown) % rows)
+              if (this.x < 0){
+                this.x += cols;
+              }
+              if (this.y < 0){
+                this.y += rows;
+              }
+              //console.log(tempx, tempy)
+              //console.log(this.x,this.y)
+              // if (this.x > cols || this.x < 0){
+              //   this.x = tempx
+              // }
+              // if (this.y > rows || this.y < 0){
+              //   this.y = tempy
+              // }
               this.queue.unshift([this.x,this.y]);
               //console.log(this.queue);
             }
+            // updategrow(){
+            //   var tempqueue = this.queue;
+            //   var newx = this.queue[0][0] + this.leftright;
+            //   var newy = this.queue[0][1] + this.updown;
+            //   this.queue.unshift([newx,newy]);
+            //   if (this.queue[0][0] > cols - 1 || this.queue[0][1] < 0){
+            //     this.queue = tempqueue;
+            //   }
+            //   if (this.queue[0][1] > rows - 1 || this.queue[0][1] < 0){
+            //     this.queue = tempqueue;
+            //   }
+            // }
             popa(){
               this.queue.pop();
               //console.log(this.queue);
@@ -66,7 +97,11 @@
                 this.leftright = 0
               }
 
-          }
+            }
+            updateDirection(newDirection){
+              this.direction = newDirection;
+              this.directiondeccide()
+            }
         }
 
 
@@ -81,9 +116,9 @@
           var rows = 25;
           var gridsize = 20
 
-          var snak = new snek(6,6,snake,"up");
 
           var gameGrid = new grid(cols, rows, empty);
+          var snak = new snek(6,6,snake,"left");
           gameGrid.gameGrid[0][0] = fruit;
 
           function main(grid,snek){
@@ -93,11 +128,26 @@
             canvas.style = "border:1px solid #000000";
             var ctx = canvas.getContext("2d");
             document.body.appendChild(canvas);
+            document.addEventListener("keydown", function(event){
+              if(event.keyCode == 65){
+                snek.updateDirection("left");
+              }
+              else if (event.keyCode == 83){
+                snek.updateDirection("down");
+              }
+              else if (event.keyCode == 87){
+                snek.updateDirection("up")
+              }
+              else if (event.keyCode == 68){
+                snek.updateDirection("right")
+              }
+            });
             draw(ctx,grid,snek);
             loop(ctx, grid, snek);
           }
 
           function draw(ctx, grid, snek){
+            ctx.clearRect(0,0,cols*gridsize,rows*gridsize);
             for (i in grid.gameGrid){
               for (j in grid.gameGrid[i]){
                 if (grid.gameGrid[i][j] !== empty){
@@ -113,31 +163,24 @@
                 }
               }
             }
+
             update(grid,snek);
+            //console.log(grid.gameGrid);
           }
 
           function loop(ctx,grid,snek){
-
-
-            //console.log("test");
-            setInterval( function() {draw(ctx, grid, snek);}, 3000);
+            setInterval( function() {draw(ctx, grid, snek);}, 100);
           }
 
           function update(grid,snek){
-            //console.log(snek.queue)
-            for (i in snek.queue){
-              grid.gameGrid[snek.queue[i][0]][snek.queue[i][1]] = empty;
-            }
-            //console.log(grid.gameGrid);
+            lastsnek = snek.queue[snek.queue.length-1];
+            grid.setter(empty, lastsnek[0], lastsnek[1]);
             snek.updategrow();
             snek.popa();
             for (i in snek.queue){
-              grid.gameGrid[snek.queue[i][0]][snek.queue[i][1]] = snake;
+              grid.setter(snake, snek.queue[i][0], snek.queue[i][0]);
             }
-            //console.log(grid.gameGrid);
           }
-
-
 
           main(gameGrid,snak);
         </script>
