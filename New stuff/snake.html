@@ -3,6 +3,28 @@
     <body> <!-- contains visable data -->
         <!--<canvas id="myCanvas" width="300" height = "300" style="border:1px solid #d3d3d3" ></canvas>--> <!-- Generates canvas with name myCanvas width 200 heght 200 with a 1 pixel border of colour d3d3d3-->
         <script>
+          function sleep(milliseconds){
+            var start= new Date().getTime();
+            for (var i = 0; i < 1e7; i ++){
+              if ((new Date().getTime() - start) > milliseconds){
+                break;
+              }
+            }
+          }
+
+          function hadDuplicates(array){
+            anydups = false
+            for (var i in array){
+              for (var j in array){
+                if (array[i][0] === array[j][0] && array[i][1] === array[j][1] && i !== j){
+                  anydups = true
+                }
+              }
+            }
+            return anydups;
+          }
+
+
           class grid{
             constructor(height, width, filler){
               this.height = height;
@@ -50,6 +72,47 @@
                 clearInterval(clear);
                 gameOver(ctx);
               }
+
+              if (hadDuplicates(this.queue) === true){
+                clearInterval(clear);
+                gameOver(ctx);
+              }
+              console.log(this.queue);
+              console.log(hadDuplicates(this.queue));
+
+              // console.log("start");
+              // for (var i in this.queue){
+              // console.log("one",this.queue[i]);
+              // }
+
+              // var temp;
+              // for (var i in this.queue){
+              //   temp = this.queue[i];
+              //   this.queue.splice(i,1);
+              //   if (this.queue.includes(temp)){
+              //     clearInterval(clear);
+              //     gameOver(ctx);
+              //   }
+              //   this.queue.splice(i,0,temp);
+              // }
+
+
+              // var newqueue = [];
+              // for (var i in this.queue){
+              //   newqueue.push(this.queue[i])
+              // }
+
+              // console.log("OLDQUEUE", newqueue)
+              // newqueue.shift()
+              // console.log("NEWQUEUE", newqueue)
+              // console.log("THIS.QUEUE", this.queue)
+              // if (newqueue.includes(this.queue[0])){
+              //   clearInterval(clear);
+              //   gameOver(ctx);
+              // }
+
+
+
             }
             popa(){
               this.queue.pop();
@@ -74,6 +137,7 @@
               }
             }
             updateDirection(direc){
+
               if (this.direction === "left" && direc !== "right"){
                 this.direction = direc;
               }
@@ -108,6 +172,11 @@
           snak.updategrow();
           snak.updategrow();
           snak.updategrow();
+          snak.updategrow();
+          snak.updategrow();
+          snak.updategrow();
+          snak.updategrow();
+          snak.updategrow();
 
 
           var gameGrid = new grid(cols, rows, empty);
@@ -118,6 +187,7 @@
             canvas.width = cols * gridsize;
             canvas.height = rows * gridsize;
             canvas.style = "border:1px solid #000000";
+            canvas.style = "position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto; border:2px solid black";
             var ctx = canvas.getContext("2d");
             document.body.appendChild(canvas);
             document.addEventListener("keydown", function(event){
