@@ -41,7 +41,6 @@
             }
             var pos = getrand(0, freelist.length-1);
             var val = freelist[pos];
-            //console.log(val)
             grid.gameGrid[val[0]][val[1]] = fruit;
           }
 
@@ -97,65 +96,10 @@
 
               this.x = this.x + this.leftright;
               this.y = this.y + this.updown;
-              //console.log(this.updown);
               this.queue.unshift([this.x,this.y]);
-              //console.log(this.queue);
-              // if (this.x > cols - 1 || this.x < 0){
-              //   //window.cancelAnimationFrame(clear)
-              //   clearInterval(clear);
-              //   gameOver(ctx);
-              // }
-              // if (this.y > rows - 1 || this.y < 0){
-              //   //window.cancelAnimationFrame(clear)
-              //   clearInterval(clear);
-              //   gameOver(ctx);
-              // }
-              //
-              // if (hadDuplicates(this.queue) === true){
-              //   //window.cancelAnimationFrame(clear)
-              //   clearInterval(clear);
-              //   gameOver(ctx);
-              // }
-              //console.log(this.queue);
-              //console.log(hadDuplicates(this.queue));
-
-              // console.log("start");
-              // for (var i in this.queue){
-              // console.log("one",this.queue[i]);
-              // }
-
-              // var temp;
-              // for (var i in this.queue){
-              //   temp = this.queue[i];
-              //   this.queue.splice(i,1);
-              //   if (this.queue.includes(temp)){
-              //     clearInterval(clear);
-              //     gameOver(ctx);
-              //   }
-              //   this.queue.splice(i,0,temp);
-              // }
-
-
-              // var newqueue = [];
-              // for (var i in this.queue){
-              //   newqueue.push(this.queue[i])
-              // }
-
-              // console.log("OLDQUEUE", newqueue)
-              // newqueue.shift()
-              // console.log("NEWQUEUE", newqueue)
-              // console.log("THIS.QUEUE", this.queue)
-              // if (newqueue.includes(this.queue[0])){
-              //   clearInterval(clear);
-              //   gameOver(ctx);
-              // }
-
-
-
             }
             popa(){
               this.queue.pop();
-              //console.log(this.queue);
             }
             directiondeccide(){
               if (this.direction === "left"){
@@ -206,17 +150,6 @@
           var gridsize = 20
 
           var snak = new snek(12,12,snake,"up");
-          // snak.updategrow();
-          // snak.updategrow();
-          // snak.updategrow();
-          // snak.updategrow();
-          // snak.updategrow();
-          // snak.updategrow();
-          // snak.updategrow();
-          // snak.updategrow();
-          // snak.updategrow();
-          // snak.updategrow();
-
 
           var gameGrid = new grid(cols, rows, empty);
           newfruit(gameGrid)
@@ -230,34 +163,18 @@
             canvas.style = "position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto; border:2px solid black";
             var ctx = canvas.getContext("2d");
             document.body.appendChild(canvas);
-            // document.addEventListener("keydown", function(event){
-            //   if(event.keyCode == 65){
-            //     snek.updateDirection("left");
-            //   }
-            //   else if (event.keyCode == 83){
-            //     snek.updateDirection("down");
-            //   }
-            //   else if (event.keyCode == 87){
-            //     snek.updateDirection("up")
-            //   }
-            //   else if (event.keyCode == 68){
-            //     snek.updateDirection("right")
-            //   }
-            // });
-            var map = {}; // You could also use an array
+            var map = {};
             onkeydown = onkeyup = function(e){
               e = e || event; // to deal with IE
               map[e.keyCode] = e.type == 'keydown';
               var maps = [map[65], map[83], map[87], map[68]]
               var mapstrue = []
-              //console.log(maps)
               for (i in maps){
                 if (maps[i] == true){
                   mapstrue.push(maps[i])
                 }
               }
 
-              //console.log(mapstrue.length);
               if (mapstrue.length <= 1) {
 
                 if(map[65] === true){
@@ -297,18 +214,15 @@
               }
             }
             if (snek.x > cols - 1 || snek.x < 0){
-              //window.cancelAnimationFrame(clear)
               clearInterval(clear);
               gameOver(ctx);
             }
             if (snek.y > rows - 1 || snek.y < 0){
-              //window.cancelAnimationFrame(clear)
               clearInterval(clear);
               gameOver(ctx);
             }
 
             if (hadDuplicates(snek.queue) === true){
-              //window.cancelAnimationFrame(clear)
               clearInterval(clear);
               gameOver(ctx);
             }
@@ -316,22 +230,15 @@
           }
 
           function loop(ctx,grid,snek){
-
-
-            //console.log("test");
             var clear = setInterval( function() {draw(ctx, grid, snek, clear);}, 75);
-            //var clear = window.requestAnimationFrame(function() {draw(ctx, grid, snek, clear);});
           }
 
           function update(grid,snek,clear,ctx){
-            //console.log(snek.queue)
             for (i in snek.queue){
-              //console.log((snek.queue));
               if (snek.queue[i][0] >= 0 && snek.queue[i][0] <= cols-1){
               grid.gameGrid[snek.queue[i][0]][snek.queue[i][1]] = empty;
               }
             }
-            //console.log(grid.gameGrid);
             snek.updategrow(clear,ctx);
             snek.popa();
             for (i in snek.queue){
@@ -339,7 +246,6 @@
               grid.gameGrid[snek.queue[i][0]][snek.queue[i][1]] = snake;
               }
             }
-            //console.log(grid.gameGrid);
           }
           function gameOver(ctx){
           }
