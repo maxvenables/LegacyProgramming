@@ -65,20 +65,23 @@
               this.queue.unshift([this.x,this.y]);
               //console.log(this.queue);
               if (this.x > cols - 1 || this.x < 0){
+                //window.cancelAnimationFrame(clear)
                 clearInterval(clear);
                 gameOver(ctx);
               }
               if (this.y > rows - 1 || this.y < 0){
+                //window.cancelAnimationFrame(clear)
                 clearInterval(clear);
                 gameOver(ctx);
               }
 
               if (hadDuplicates(this.queue) === true){
+                //window.cancelAnimationFrame(clear)
                 clearInterval(clear);
                 gameOver(ctx);
               }
-              console.log(this.queue);
-              console.log(hadDuplicates(this.queue));
+              //console.log(this.queue);
+              //console.log(hadDuplicates(this.queue));
 
               // console.log("start");
               // for (var i in this.queue){
@@ -190,20 +193,50 @@
             canvas.style = "position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto; border:2px solid black";
             var ctx = canvas.getContext("2d");
             document.body.appendChild(canvas);
-            document.addEventListener("keydown", function(event){
-              if(event.keyCode == 65){
-                snek.updateDirection("left");
+            // document.addEventListener("keydown", function(event){
+            //   if(event.keyCode == 65){
+            //     snek.updateDirection("left");
+            //   }
+            //   else if (event.keyCode == 83){
+            //     snek.updateDirection("down");
+            //   }
+            //   else if (event.keyCode == 87){
+            //     snek.updateDirection("up")
+            //   }
+            //   else if (event.keyCode == 68){
+            //     snek.updateDirection("right")
+            //   }
+            // });
+            var map = {}; // You could also use an array
+            onkeydown = onkeyup = function(e){
+              e = e || event; // to deal with IE
+              map[e.keyCode] = e.type == 'keydown';
+              var maps = [map[65], map[83], map[87], map[68]]
+              var mapstrue = []
+              console.log(maps)
+              for (i in maps){
+                if (maps[i] == true){
+                  mapstrue.push(maps[i])
+                }
               }
-              else if (event.keyCode == 83){
-                snek.updateDirection("down");
+
+              console.log(mapstrue.length);
+              if (mapstrue.length <= 1) {
+
+                if(map[65] === true){
+                    setTimeout( function() {snek.updateDirection("left");}, 16);
+                  }
+                  else if (map[83] === true){
+                    setTimeout( function() {snek.updateDirection("down");}, 16);
+                  }
+                  else if (map[87] === true){
+                    setTimeout( function() {snek.updateDirection("up");}, 16)
+                  }
+                  else if (map[68] === true){
+                    setTimeout( function() {snek.updateDirection("right");}, 16)
+                  }
               }
-              else if (event.keyCode == 87){
-                snek.updateDirection("up")
-              }
-              else if (event.keyCode == 68){
-                snek.updateDirection("right")
-              }
-            });
+            }
             draw(ctx,grid,snek);
             loop(ctx, grid, snek);
           }
@@ -233,7 +266,7 @@
 
             //console.log("test");
             var clear = setInterval( function() {draw(ctx, grid, snek, clear);}, 100);
-
+            //var clear = window.requestAnimationFrame(function() {draw(ctx, grid, snek, clear);});
           }
 
           function update(grid,snek,clear,ctx){
