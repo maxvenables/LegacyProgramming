@@ -87,49 +87,63 @@
           var rects = [topleft,topmid,topright,midleft,mid,midright,botleft,botmid,botright]
 
           var wincons = [
-            [1,1,1,0,0,0,0,0,0],
-            [0,0,0,1,1,1,0,0,0],
-            [0,0,0,0,0,0,1,1,1],
-            [1,0,0,1,0,0,1,0,0],
-            [0,1,0,0,1,0,0,1,0],
-            [0,0,1,0,0,1,0,0,1],
-            [1,0,0,0,1,0,0,0,1],
-            [0,0,1,0,1,0,1,0,0]
+            "123",
+            "456",
+            "789",
+            "147",
+            "258",
+            "369",
+            "159",
+            "357",
           ]
 
           function checkIfWon(rects, wincons){
             var marks = []
-            for (i in rects){
+            for (var i in rects){
               marks.push(rects[i].mark);
             }
-            console.log(marks);
             var crosses = [];
-            for (i in marks){
-              if (marks[i] == -1){
+            for (var j in marks){
+              if (marks[j] === -1){
                 crosses.push(1);
               }
               else{
                 crosses.push(0);
               }
+            }
             var noughts = [];
-            for (i in marks){
-              if (marks[i] == 1){
+            for (var k in marks){
+              if (marks[k] == 1){
                 noughts.push(1);
               }
               else{
                 noughts.push(0);
               }
             }
-            console.log(noughts);
-            console.log(crosses);
-            if (wincons.includes(crosses) == true){
-              return "crosses"
-            }else if (wincons.includes(noughts) == true){
-              return "noughts"
-            } else {
-              return "continue"
+            poses = "123456789";
+            nNums = ""
+            cNums = ""
+            for (var i in marks){
+              if (marks[i] == 1){
+                nNums = nNums.concat(poses.charAt(i));
+              }
+              else if (marks[i] == -1){
+                cNums = cNums.concat(poses.charAt(i));
+              }
             }
-          }
+            for (i in wincons){
+              if (cNums.includes(wincons[i])){
+                return "crosses"
+              }
+              if (nNums.includes(wincons[i])){
+                return "noughts"
+              }
+            }
+
+            if (nNums.length + cNums.length == 9){
+              return "draw"
+            }
+            return "continue"
         }
           drawBoard()
           //Binding the click event on the canvas
@@ -148,13 +162,40 @@
                     rects[i].marked = true;
                   }
 
-                  console.log(checkIfWon(rects, wincons));
+                  won = checkIfWon(rects, wincons);
+                  if (won !== "continue"){
+                    winner(won);
+                  }
                 }
               }
             }, false);
 
           }
+          function winner(won){
+            ctx.clearRect(0,0,300,300);
+            var message = ""
+            if (won == "noughts"){
+              message = "noughts wins"
+            }
+            else if (won == "crosses"){
+              message = "crosses wins"
+            }
+            else {
+              message = "draw"
+            }
+            ctx.fillStyle = "#000000";
+            ctx.font = "50px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(message, 150, 150);
+
+          }
+
+
+
           checkpos(rects);
+
+
 
 
         </script>
