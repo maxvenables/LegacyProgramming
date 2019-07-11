@@ -181,6 +181,8 @@
           var rows = 25;
           var gridsize = 20;
 
+          var gamestate = "menu";
+
           var snak = new snek(12,12,snake,"up");
 
           var gameGrid = new grid(cols, rows, empty);
@@ -193,15 +195,19 @@
           canvas.style = "position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto; border:2px solid black";
           var ctx = canvas.getContext("2d");
           document.body.appendChild(canvas);
+          var box = new rect(((cols*gridsize)/2)-50, ((rows*gridsize)/2)-50, 100, 50, ctx, "play");
+          // canvas.addEventListener('click', function(evt) {
+          // var mousePos = getMousePos(canvas, evt);
+          // if (isInside(mousePos,box) && gamestate == "menu") {
+          //   gamestate = "game";
+          //   main(grid,snak,ctx);
+          // }
+          // }, false);
+
           //gameGrid.gameGrid[12][1] = fruit;
 
           function main(grid,snek,ctx){
-            canvas.addEventListener('click', function(evt) {
-            var mousePos = getMousePos(canvas, evt);
-            if (isInside(mousePos,box)) {
-              main(grid,snek,ctx);
-              }
-            }, false);
+            //console.log(grid.gameGrid);
             var map = {};
             onkeydown = onkeyup = function(e){
               e = e || event; // to deal with IE
@@ -234,8 +240,8 @@
             loop(ctx, grid, snek);
           }
 
-          function draw(ctx, grid, snek, clear){
-            checkfruit(grid, snek, clear, ctx);
+          function drawGrid(ctx, grid, snek, clear){
+            console.log(grid.gameGrid);
             ctx.clearRect(0,0,cols*gridsize, rows*gridsize);
             for (i in grid.gameGrid){
               for (j in grid.gameGrid[i]){
@@ -252,6 +258,13 @@
                 }
               }
             }
+          }
+
+          function draw(ctx, grid, snek, clear){
+            console.log("hey");
+            checkfruit(grid, snek, clear, ctx);
+            ctx.clearRect(0,0,cols*gridsize, rows*gridsize);
+            drawGrid(ctx,grid,snek,clear);
             var score = snek.queue.length - 1;
             var displayScore = "Score: ".concat(score.toString());
             ctx.fillStyle = "#000000";
@@ -261,21 +274,33 @@
             ctx.fillText(displayScore,0,rows * (gridsize - 0))
             if (snek.x > cols - 1 || snek.x < 0){
               clearInterval(clear);
-              gameOver(ctx, grid, snek);
+              //return false;
+              gameOver(ctx, grid, snek, clear);
             }
             if (snek.y > rows - 1 || snek.y < 0){
               clearInterval(clear);
-              gameOver(ctx, grid, snek);
+              ///return false;
+              gameOver(ctx, grid, snek, clear);
             }
 
             if (hadDuplicates(snek.queue) === true){
               clearInterval(clear);
-              gameOver(ctx, grid, snek);
+              //return false;
+              gameOver(ctx, grid, snek, clear);
             }
             update(grid,snek,clear,ctx);
+            //loop(ctx,grid,snek)
           }
 
           function loop(ctx,grid,snek){
+
+            // var clear = true;
+            // while (clear == true){
+            //   sleep(100);
+            //   clear = draw(ctx, grid, snek);
+            // }
+            //var clear = setTimeout( function() {draw(ctx,grid,snek,clear);}, 100);
+
             var clear = setInterval( function() {draw(ctx, grid, snek, clear);}, 75);
           }
 
@@ -293,12 +318,25 @@
               }
             }
           }
-          function gameOver(ctx, grid, snek){
-            ctx.clearRect(0,0,cols*gridsize,rows*gridsize);
-            mainMenu(grid,snek,ctx);
+          function gameOver(ctx, grid, snok, clear){
+            clearInterval(clear);
+            for (var i in grid.gameGrid){
+              for (var j in grid.gameGrid){
+                grid.gameGrid[i][j] = empty;
+              }
+            }
+            ctx.clearRect(0,0,cols*gridsize, rows*gridsize);
+            drawGrid(ctx,grid,snok,clear);
+            newfruit(grid);
+            mainMenu(grid,ctx,snok, clear);
           }
 
-          function mainMenu(grid, snek,ctx){
+          function mainMenu(grid, ctx, snok, clear){
+            if (clear !== undefined){
+
+            }
+            gamestate = "menu";
+            ctx.clearRect(0,0,cols*gridsize,rows*gridsize);
             ctx.fillStyle = "#000000";
             ctx.font = "50px Arial";
 
@@ -308,15 +346,37 @@
             ctx.textAlign = "center";
             ctx.fillText("Snake",(cols*gridsize)/2,100);
 
-            var box = new rect(((cols*gridsize)/2)-50, ((rows*gridsize)/2)-50, 100, 50, ctx, "play");
+
             box.draw()
 
             canvas.addEventListener('click', function(evt) {
             var mousePos = getMousePos(canvas, evt);
-            if (isInside(mousePos,box)) {
-              main(grid,snek,ctx);
+            if (isInside(mousePos,box) && gamestate == "menu") {
+              gamestate = "game";
+              delete snok;
+              ctx.clearRect(0,0,cols*gridsize, rows*gridsize);
+              for (var i in grid.gameGrid){
+                for (var j in grid.gameGrid){
+                  grid.gameGrid[i][j] = empty;
+                }
+              }
+              newfruit(grid);
+              var snuk = new snek(12,12,snake,"up");
+              main(grid,snuk,ctx);
             }
           }, false);
+          // var mouseDown = 0;
+          //canvas.addEventListener('click', check, false);
+
+          // document.body.onmousedown = function() {
+          //   ++mouseDown;
+          // }
+          // document.body.onmouseup = function() {
+          //   --mouseDown;
+          // }
+          // if (mouseDown == 1){
+          //   main(grid,snek,ctx);
+          // }
             //main(grid, snek,ctx);
             //highScorePage();
 
@@ -325,10 +385,19 @@
             mainMenu();
           }
 
+          // function check(evt){
+          //   var mousePos = getMousePos(canvas, evt);
+          //   if (isInside(mousePos,box)) {
+          //     canvas.removeEventListener('click', check, false);
+          //     main(grid,snek,ctx);
+          // }
+          //
+          // }
 
 
 
-          mainMenu(gameGrid,snak,ctx);
+          mainMenu(gameGrid,ctx);
+
         </script>
     </body>
 </html> <!-- tags with / indicate end-->
