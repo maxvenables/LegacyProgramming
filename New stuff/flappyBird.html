@@ -1,0 +1,55 @@
+<html>
+<body></body>
+<script>
+  function start(){
+    //var framesPerSecond = 60
+    var canvas = document.createElement("Canvas")
+    canvas.width = 600;
+    canvas.height = 600;
+    canvas.style = "border:1px solid #000000";
+    canvas.style = "position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto; border:2px solid black";
+    var ctx = canvas.getContext("2d");
+    document.body.appendChild(canvas);
+
+    var bird = new projectile(canvas, ctx);
+    startloop(canvas, ctx, bird)
+  }
+
+  function startloop(canvas, ctx, bird){
+    var intervalID = setInterval( function() {main(canvas, ctx, bird);}, 1000/60);
+  }
+
+  function main(canvas, ctx, bird){
+    ctx.clearRect(0,0,canvas.width, canvas.height);
+    bird.draw();
+    bird.addSpeedPerFrame();
+    bird.addDispPerFrame();
+  }
+
+  class projectile{
+    constructor(canvas, ctx){
+      this.x = canvas.width/2;
+      this.y = canvas.height/2;
+      this.speed = -400;
+      this.accel = 1000;
+      this.canvas = canvas;
+      this.ctx = ctx;
+    }
+    draw(){
+      this.ctx.strokeRect(this.x-50,this.y-50,100,100);
+    }
+    addSpeedPerFrame(){
+      this.speed += (this.accel / 60);
+    }
+    addDispPerFrame(){
+      this.y += (this.speed / 60);
+    }
+
+  }
+
+
+
+
+  start();
+</script>
+</html>
