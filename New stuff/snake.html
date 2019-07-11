@@ -56,6 +56,7 @@
             draw(){
             this.ctx.strokeRect(this.x, this.y, this.width, this.height);
             this.ctx.font = "30px Arial";
+            ctx.fillStyle = "black";
             this.ctx.textAlign = "center";
             this.ctx.textBaseline = "middle";
             this.ctx.fillText(this.text, this.x + (this.width)/2, this.y + (this.height/2));
@@ -233,7 +234,6 @@
           }
 
           function drawGrid(ctx, grid, snek, clear){
-            console.log(grid.gameGrid);
             ctx.clearRect(0,0,cols*gridsize, rows*gridsize);
             for (i in grid.gameGrid){
               for (j in grid.gameGrid[i]){
@@ -302,6 +302,8 @@
           function gameOver(ctx, grid, snok, clear){
             gamestate = "gameover"
             clearInterval(clear);
+            update(grid,snok,clear,ctx);
+            drawGrid(ctx, grid, snok, clear);
             for (var i in grid.gameGrid){
               for (var j in grid.gameGrid){
                 grid.gameGrid[i][j] = empty;
@@ -310,6 +312,7 @@
             ctx.clearRect(0,0,cols*gridsize, rows*gridsize);
             box.text = "Back";
             box.y += 100
+            ctx.strokeStyle = "black";
             box.draw();
 
             ctx.fillStyle = "#000000";
