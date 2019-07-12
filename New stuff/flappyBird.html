@@ -49,9 +49,18 @@
       if (checkIfCollided(objectList) == true){
         gameOver(intervalID);
       }
+      addScore(objectList);
+      ctx.fillStyle = "#14db2b";
+      ctx.fillRect(0, canvas.height * (47/48), canvas.width, canvas.height)
+      var displayScore = "Score: ".concat((Math.round((score/5))).toString());
+      ctx.fillStyle = "#000000";
+      ctx.font = "24px Arial";
+      ctx.textAlign = "start";
+      ctx.textBaseline = "bottom";
+      ctx.fillText(displayScore,0,canvas.height);
+
     }
-    ctx.fillStyle = "#14db2b";
-    ctx.fillRect(0, canvas.height * (47/48), canvas.width, canvas.height)
+
 
   }
 
@@ -85,6 +94,16 @@
       }
       return over
     }
+
+  function addScore(objectList){
+    for (i = 1; i < objectList.length; i++){
+      //if ((objectList[0].x - (objectList[i].x + objectList[i].width)) > -20 && (objectList[0].x - (objectList[i].x + objectList[i].width)) < 20) {
+      if ((objectList[0].x - (objectList[i].x + objectList[i].width)) > -1 && (objectList[0].x - (objectList[i].x + objectList[i].width)) < 1) {
+        score += 1;
+      }
+    }
+    return score
+  }
 
 
   class projectile{
@@ -169,7 +188,7 @@
 
 
 
-
+  var score = 0
   start();
 </script>
 </html>
