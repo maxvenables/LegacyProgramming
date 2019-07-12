@@ -206,7 +206,7 @@
             onkeydown = onkeyup = function(e){
               e = e || event; // to deal with IE
               map[e.keyCode] = e.type == 'keydown';
-              var maps = [map[65], map[83], map[87], map[68]]
+              var maps = [map[38], map[39], map[40], map[37]]
               var mapstrue = []
               for (i in maps){
                 if (maps[i] == true){
@@ -216,16 +216,16 @@
 
               if (mapstrue.length <= 1) {
 
-                if(map[65] === true){
+                if(map[37] === true){
                     setTimeout( function() {snek.updateDirection("left");}, 1000/60);
                   }
-                  else if (map[83] === true){
+                  else if (map[40] === true){
                     setTimeout( function() {snek.updateDirection("down");}, 1000/60);
                   }
-                  else if (map[87] === true){
+                  else if (map[38] === true){
                     setTimeout( function() {snek.updateDirection("up");}, 1000/60)
                   }
-                  else if (map[68] === true){
+                  else if (map[39] === true){
                     setTimeout( function() {snek.updateDirection("right");}, 1000/60)
                   }
               }
