@@ -151,7 +151,7 @@
       this.canvas = canvas;
       this.ctx =  ctx;
       this.speed = 200;
-      this.accel = 0;
+      this.accel = 1;
 
       this.changeSize();
     }
@@ -175,7 +175,7 @@
     }
 
     addSpeedPerFrame(){
-
+      this.speed += this.accel / 60
     }
 
     checkIfOffScreen(intervalID){
