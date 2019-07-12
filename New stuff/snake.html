@@ -196,7 +196,8 @@
           canvas.style = "position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto; border:2px solid black";
           var ctx = canvas.getContext("2d");
           document.body.appendChild(canvas);
-          var box = new rect(((cols*gridsize)/2)-50, ((rows*gridsize)/2)-50, 100, 50, ctx, "play");
+          var box = new rect(((cols*gridsize)/2)-100, ((rows*gridsize)/2)-50, 200, 50, ctx, "play");
+          var box2 = new rect(((cols*gridsize)/2)-100, ((rows*gridsize)/2)+50, 200, 50, ctx, "how to play");
 
 
           function main(grid,snek,ctx){
@@ -282,7 +283,7 @@
 
           function loop(ctx,grid,snek){
 
-            var clear = setInterval( function() {draw(ctx, grid, snek, clear);}, 125);
+            var clear = setInterval( function() {draw(ctx, grid, snek, clear);}, 75);
           }
 
           function update(grid,snek,clear,ctx){
@@ -361,6 +362,39 @@
 
             box.text = "Play";
             box.draw();
+            box2.text = "View Controls";
+            box2.draw();
+
+            canvas.addEventListener('click', function(evt) {
+            var mousePos = getMousePos(canvas, evt);
+            if (isInside(mousePos,box2) && gamestate == "menu") {
+              gamestate = "menu2";
+              ctx.clearRect(0,0,cols*gridsize, rows*gridsize);
+              box2.text = "Back to Menu";
+              box2.draw()
+              ctx.textAlign = "center";
+              ctx.fillStyle = "#000000";
+              ctx.font = "50px Arial";
+              ctx.fillText("Controls:",(cols*gridsize)/2,50);
+              ctx.font = "30px Arial"
+              ctx.textAlign = "start";
+              var shift = 56;
+              ctx.fillText("Up: W",(cols*gridsize)/2-shift,100);
+              ctx.fillText("Left: A",(cols*gridsize)/2-shift,150);
+              ctx.fillText("Right: D",(cols*gridsize)/2-shift,200);
+              ctx.fillText("Down: S",(cols*gridsize)/2-shift,250);
+            }
+            canvas.addEventListener('click', function(evt) {
+            var mousePos = getMousePos(canvas, evt);
+            if (isInside(mousePos,box2) && gamestate == "menu2") {
+              box2.text = "View Controls";
+              mainMenu(gameGrid, ctx);
+            }
+
+          }, false);
+
+          }, false);
+
 
             canvas.addEventListener('click', function(evt) {
             var mousePos = getMousePos(canvas, evt);
