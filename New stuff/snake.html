@@ -311,7 +311,7 @@
               }
             }
             ctx.clearRect(0,0,cols*gridsize, rows*gridsize);
-            box.text = "Back";
+            box.text = "Back to Menu";
             box.y += 100
             ctx.strokeStyle = "black";
             box.draw();
@@ -384,19 +384,20 @@
               ctx.fillText("Right: D",(cols*gridsize)/2-shift,200);
               ctx.fillText("Down: S",(cols*gridsize)/2-shift,250);
             }
-            canvas.addEventListener('click', function(evt) {
+            canvas.addEventListener('click', function b(evt) {
             var mousePos = getMousePos(canvas, evt);
             if (isInside(mousePos,box2) && gamestate == "menu2") {
               box2.text = "View Controls";
               mainMenu(gameGrid, ctx);
             }
+            canvas.removeEventListener("click", b)
 
           }, false);
 
           }, false);
 
 
-            canvas.addEventListener('click', function(evt) {
+            canvas.addEventListener('click', function a(evt) {
             var mousePos = getMousePos(canvas, evt);
             if (isInside(mousePos,box) && gamestate == "menu") {
               gamestate = "game";
@@ -410,6 +411,7 @@
               newfruit(grid);
               var snuk = new snek(12,12,snake,"up");
               main(grid,snuk,ctx);
+              canvas.removeEventListener("click", a)
             }
           }, false);
           }
