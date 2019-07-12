@@ -1,10 +1,16 @@
 <html>
 <body></body>
 <script>
+  function getrand(min,max){
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
   function start(){
     //var framesPerSecond = 60
     var canvas = document.createElement("Canvas")
-    canvas.width = 600;
+    canvas.width = 1200;
     canvas.height = 600;
     canvas.style = "border:1px solid #000000";
     canvas.style = "position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto; border:2px solid black";
@@ -12,31 +18,102 @@
     document.body.appendChild(canvas);
 
     var bird = new projectile(canvas, ctx);
-    startloop(canvas, ctx, bird)
+    var pipe1 = new obstacle(canvas,ctx,1);
+    var pipe2 = new obstacle(canvas,ctx, 2);
+    var pipe3 = new obstacle(canvas,ctx, 3);
+    var pipe4 = new obstacle(canvas,ctx, 4);
+    objectList = [bird, pipe1, pipe2, pipe3, pipe4];
+
+
+    canvas.addEventListener('click', function(evt) {
+      bird.addSpeedByClick();
+
+    }, false);
+
+
+    startloop(canvas, ctx, objectList)
   }
 
-  function startloop(canvas, ctx, bird){
-    var intervalID = setInterval( function() {main(canvas, ctx, bird);}, 1000/60);
+  function startloop(canvas, ctx, objectList){
+    var intervalID = setInterval( function() {main(canvas, ctx, objectList, intervalID);}, 1000/60);
   }
 
-  function main(canvas, ctx, bird){
+  function main(canvas, ctx, objectList, intervalID){
     ctx.clearRect(0,0,canvas.width, canvas.height);
-    bird.draw();
-    bird.addSpeedPerFrame();
-    bird.addDispPerFrame();
+    ctx.fillStyle = "#42e9f5";
+    ctx.fillRect(0,0, canvas.width, canvas.height);
+    for (i in objectList){
+      objectList[i].addSpeedPerFrame();
+      objectList[i].addDispPerFrame();
+      objectList[i].checkIfOffScreen(intervalID);
+      objectList[i].draw();
+      if (checkIfCollided(objectList) == true){
+        gameOver(intervalID);
+      }
+    }
+    ctx.fillStyle = "#14db2b";
+    ctx.fillRect(0, canvas.height * (47/48), canvas.width, canvas.height)
+
   }
+
+  function checkIfCollided(objectList){
+    obstacleList = []
+    for (var i = 1; i < objectList.length; i++){
+      obstacleList.push(objectList[i]);
+    }
+    var over = false;
+    for (i in obstacleList){
+      if (overlap(objectList[0], obstacleList[i]) == true){
+        over = true;
+      }
+    }
+    return over;
+  }
+
+  function gameOver(intervalID){
+    clearInterval(intervalID);
+    console.log("you lose");
+  }
+
+  function overlap(ob1, ob2){
+    var over = false;
+    var points1 = [[ob1.x, ob1.y],[ob1.x+ob1.width, ob1.y],[ob1.x, ob1.y+ob1.height],[ob1.x+ob1.width, ob1.y+ob1.height]];
+
+    var points21 = [[ob1.x, ob1.ytop],[ob1.x+ob1.width, ob1.ytop],[ob1.x, ob1.ytop+ob1.topheight],[ob1.x+ob1.width, ob1.ytop+ob1.topheight]];
+    var points22 = [[ob1.x, ob1.ybot],[ob1.x+ob1.width, ob1.ybot],[ob1.x, ob1.ybot+ob1.botheight],[ob1.x+ob1.width, ob1.ybot+ob1.botheight]];
+
+    var points2 = [points21, points2];
+      // console.log(ob1.x + ob1.width < ob2.x)
+      // console.log(ob1.y > ob2.ytop + ob2.topheight)
+      // console.log(ob1.y + ob1.height < ob2.ybot)
+      // console.log(ob1.y);
+      // console.log(ob2.ybot);
+
+      if ((ob1.x + ob1.width < ob2.x || (ob1.y > ob2.ytop + ob2.topheight && ob1.y + ob1.height < ob2.ybot)) ||
+          (ob1.x > ob2.x + ob2.width || (ob1.y + ob1.height < ob2.ytop && ob1.y > ob2.ybot + ob2.botheight))){
+        over = false;
+      }
+      else {
+        over = true;
+      }
+      return over
+    }
+
 
   class projectile{
     constructor(canvas, ctx){
       this.x = canvas.width/2;
       this.y = canvas.height/2;
+      this.width = 50;
+      this.height = 50;
       this.speed = -400;
       this.accel = 1000;
       this.canvas = canvas;
       this.ctx = ctx;
     }
     draw(){
-      this.ctx.strokeRect(this.x-50,this.y-50,100,100);
+      this.ctx.fillStyle = "#FF0000"
+      this.ctx.fillRect(this.x,this.y,this.width,this.height);
     }
     addSpeedPerFrame(){
       this.speed += (this.accel / 60);
@@ -44,7 +121,74 @@
     addDispPerFrame(){
       this.y += (this.speed / 60);
     }
+    addSpeedByClick(){
+      this.speed = -300;
+    }
+    checkIfOffScreen(intervalID){
+      if (this.y < 0 || this.y + this.height > this.canvas.height * (47/48)){
+        gameOver(intervalID);
+      }
 
+    }
+
+  }
+
+  class obstacle{
+    constructor(canvas, ctx, num){
+      this.width = 150;
+      this.topheight = 200;
+      this.botheight = 200;
+      this.x = (canvas.width/3)*num + 2*canvas.width/3;
+      this.ytop = 0;
+      this.ybot = canvas.height - this.botheight
+
+      this.canvas = canvas;
+      this.ctx =  ctx;
+      this.speed = 200;
+      this.accel = 0;
+
+      this.changeSize();
+    }
+    draw(){
+      //console.log(this.width, this.height);
+      this.ctx.fillStyle = "#079117";
+      this.ctx.fillRect(this.x, this.ytop, this.width, this.topheight);
+      this.ctx.fillRect(this.x, this.ybot, this.width, this.botheight);
+    }
+    changeSize(){
+      var diff =  getrand(this.canvas.height/5, this.canvas.height/3);
+      var topHeight = getrand(0, this.canvas.height - diff) //START HERE
+      this.topheight = topHeight;
+
+      this.botheight = this.canvas.height-topHeight - diff;
+      this.ybot = this.canvas.height - this.botheight;
+
+
+      // if (this.topbottom == "bottom"){
+      // this.height =  getrand(0, (this.canvas.height / 2.5))
+      // //this.height = getrand(2*(this.canvas.height/3), this.canvas.height);
+      // this.y = this.canvas.height - this.height;
+      // }
+      // else{
+      //   // this.height = getrand(2*(this.canvas.height/3), this.canvas.height);
+      //   this.height =  getrand(0, (this.canvas.height / 2.5))
+      // }
+    }
+    addDispPerFrame(){
+      this.x -= this.speed / 60
+    }
+    addSpeedPerFrame(){
+
+    }
+    checkIfOffScreen(intervalID){
+      if ((this.x + this.canvas.width/3) <= 0){
+      this.x = this.canvas.width;
+      this.changeSize();
+      // if ((this.x) <= 0){
+      //   this.changeSize();
+      //   this.ctx.strokeRect(this.width - this.x, this.y)
+      }
+    }
   }
 
 
