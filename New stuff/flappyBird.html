@@ -157,7 +157,7 @@
     }
     changeSize(){
       var diff =  getrand(this.canvas.height/5, this.canvas.height/3);
-      var topHeight = getrand(0, this.canvas.height - diff) //START HERE
+      var topHeight = getrand(0, this.canvas.height - diff- this.canvas.height * (1/48)) //START HERE
       this.topheight = topHeight;
 
       this.botheight = this.canvas.height-topHeight - diff;
